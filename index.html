@@ -111,8 +111,67 @@
       text-align: left;
     }
 
+    td {
+      text-align: left;
+      vertical-align: top;
+    }
+
+    td[rowspan] {
+      font-weight: 650;
+    }
+
+    .chart-img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0.75rem auto;
+    }
+
+    .footnote {
+      font-size: 0.88rem;
+      margin-top: 0.5rem;
+    }
+
+    section ul, section ol {
+      margin: 0.5rem 0;
+      padding-left: 1.4rem;
+    }
+
+    section li {
+      margin-bottom: 0.3rem;
+    }
+
+    .cite {
+      font-weight: normal;
+      color: var(--muted);
+      font-size: 0.88em;
+    }
+
     .table-wrap {
       overflow-x: auto;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+
+    .adj-btn {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      border-radius: 4px;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .adj-btn:active {
+      opacity: 0.6;
     }
 
     footer {
@@ -131,14 +190,18 @@
       <h2 id="inputs-heading">Inputs</h2>
 
       <label for="tempF">Intake / ambient air temperature, °F</label>
-      <input id="tempF" type="number" step="0.1" value="86" inputmode="decimal">
+      <div class="slider-row">
+        <input id="tempF" type="range" min="68" max="104" step="0.1" value="86">
+        <button class="adj-btn" id="tempDown" aria-label="Decrease temperature by 0.1°F">&#9660;</button>
+        <output id="tempFOut" for="tempF">86.0°F</output>
+        <button class="adj-btn" id="tempUp" aria-label="Increase temperature by 0.1°F">&#9650;</button>
+      </div>
 
       <label for="humidity">Relative humidity</label>
       <input id="humidity" type="range" min="30" max="80" value="55" oninput="humidityOut.value = this.value + '%'">
       <output id="humidityOut" for="humidity">55%</output>
 
-      <p class="muted">Valid chart range: 68–104°F intake temperature and 30–80% relative humidity.</p>
-      <p id="rangeWarning" class="warn" aria-live="polite"></p>
+      <p class="muted">Range: 68–104°F intake temperature and 30–80% relative humidity.</p>
     </section>
 
     <section class="grid" aria-label="Calculated outputs">
@@ -184,6 +247,185 @@
         </table>
       </div>
     </section>
+
+    <section class="card" aria-labelledby="chart-heading">
+      <h2 id="chart-heading">Source chart</h2>
+      <p class="muted">The calculator interpolates from this factory performance chart. <span class="cite">[p. 21-99]</span></p>
+      <img class="chart-img" src="21-99a25.gif" alt="Factory A/C performance chart showing delivery temperature, low-side pressure, and high-side pressure vs. intake temperature at varying relative humidity">
+      <p class="muted footnote">&#185;&nbsp;The service manual presents this chart in two versions side-by-side: <strong>4-door (and 2-door)</strong> on the left and <strong>5-door</strong> on the right. The curves differ slightly between body styles. The values used in this calculator reflect the 4-door/2-door chart. <span class="cite">[p. 21-99]</span></p>
+    </section>
+
+    <section class="card" aria-labelledby="procedure-heading">
+      <h2 id="procedure-heading">How to run the performance test</h2>
+      <p>The manual specifies exact test conditions. Deviating from them will shift your readings relative to these charts. <span class="cite">[p. 21-98]</span></p>
+      <ul>
+        <li>Avoid direct sunlight.</li>
+        <li>Open the hood and both front doors.</li>
+        <li>Set temperature control to <strong>MAX COOL</strong>, mode to <strong>VENT</strong>, recirculation to <strong>RECIRCULATE</strong>.</li>
+        <li>A/C switch on, fan switch on <strong>MAX</strong>.</li>
+        <li>Engine at <strong>1,500 rpm</strong>. No driver or passengers in the vehicle.</li>
+        <li>Run the A/C for <strong>10 minutes</strong> before reading gauges and thermometer.</li>
+      </ul>
+      <p><strong>Where to measure:</strong> Insert a thermometer in the <strong>centre air vent</strong> for delivery temperature. Intake (ambient) temperature is read near the <strong>blower unit behind the glove box</strong> — this is not the same as outside air temperature and is the value to enter above. <span class="cite">[p. 21-98]</span></p>
+      <p><strong>Reading the chart:</strong> Draw a vertical line up from your intake temperature to your humidity curve. Mark points 10% above and 10% below that humidity level and draw horizontal lines from each across to the delivery temperature axis. Your reading should fall between those two lines. Apply the same method to the pressure charts. Any reading outside the band warrants further inspection. <span class="cite">[p. 21-99]</span></p>
+    </section>
+
+    <section class="card" aria-labelledby="specs-heading">
+      <h2 id="specs-heading">Refrigerant quick reference</h2>
+      <ul>
+        <li><strong>Type:</strong> HFC-134a (R-134a). Use only R-134a gauge sets and equipment — do not substitute.</li>
+        <li><strong>Charge capacity: 500–550 g (17.6–19.4 oz).</strong> Overcharging will damage the compressor. <span class="cite">[p. 21-96]</span></li>
+        <li>Charge through the <strong>low-pressure side only</strong>. Never open the high-pressure valve while charging with refrigerant cans. <span class="cite">[p. 21-96]</span></li>
+        <li>Do not turn refrigerant cans upside down while charging. <span class="cite">[p. 21-96]</span></li>
+        <li>Engine must be running below 1,500 rpm during charging, with A/C on, MAX COOL, fan on MAX, front doors open. <span class="cite">[p. 21-96]</span></li>
+        <li>After charging, check for leaks around the <strong>compressor, condenser, and receiver/dryer</strong>. <span class="cite">[p. 21-96]</span></li>
+        <li>Never use compressed air to pressure-test or leak-test the system — R-134a mixed with compressed air is combustible. <span class="cite">[p. 21-97]</span></li>
+      </ul>
+    </section>
+
+    <section class="card" aria-labelledby="evac-heading">
+      <h2 id="evac-heading">Evacuation</h2>
+      <p>Required any time the system is opened — after repair, component replacement, or accidental discharge. <span class="cite">[p. 21-95]</span></p>
+      <ul>
+        <li>If the system was open for <strong>several days</strong>, replace the receiver/dryer before evacuating. <span class="cite">[p. 21-95]</span></li>
+        <li>Use a vacuum pump adapter with a <strong>check valve</strong> to prevent pump oil backflow into the system. <span class="cite">[p. 21-95]</span></li>
+        <li>Run the pump for at least <strong>15 minutes</strong>. The low-side gauge must reach above <strong>93.3 kPa (700 mmHg / 27.6 in Hg)</strong> and hold steady with valves closed. <span class="cite">[p. 21-95]</span></li>
+        <li>If that vacuum is not reached within 15 minutes, there is a leak — find and repair it before continuing. <span class="cite">[p. 21-95]</span></li>
+        <li>If no leaks, continue pumping for at least another <strong>15 minutes</strong>, then close valves and stop the pump. <span class="cite">[p. 21-95]</span></li>
+        <li>When discharging before evacuation, let the high-side drop below <strong>140 psi (980 kPa)</strong> before opening the low-side valve. Open valves only gradually — discharging too fast draws compressor oil out of the system. <span class="cite">[p. 21-94]</span></li>
+      </ul>
+    </section>
+
+    <section class="card" aria-labelledby="diag-heading">
+      <h2 id="diag-heading">Pressure test diagnostic guide</h2>
+      <p class="muted">From the factory pressure test table. <span class="cite">[p. 21-100]</span></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Reading</th>
+              <th>What you see</th>
+              <th>Probable cause</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="4">High-side too high</td>
+              <td>After stopping compressor, pressure drops to ~28 psi quickly then falls gradually</td>
+              <td>Air in system</td>
+              <td>Discharge, evacuate, recharge to spec</td>
+            </tr>
+            <tr>
+              <td>No bubbles in sight glass when condenser is cooled with water</td>
+              <td>Overcharge</td>
+              <td>Discharge, evacuate, recharge to spec</td>
+            </tr>
+            <tr>
+              <td>Reduced or no airflow through condenser</td>
+              <td>Clogged condenser/radiator fins, or condenser/radiator fan not working</td>
+              <td>Clean fins; check fan voltage, rpm, and rotation direction</td>
+            </tr>
+            <tr>
+              <td>Line to condenser excessively hot</td>
+              <td>Restricted refrigerant flow</td>
+              <td>Inspect for kinked or blocked lines</td>
+            </tr>
+            <tr>
+              <td rowspan="2">High-side too low</td>
+              <td>Excessive bubbles in sight glass; condenser not hot</td>
+              <td>Undercharge</td>
+              <td>Check for leaks, then recharge</td>
+            </tr>
+            <tr>
+              <td>High and low pressures equalise quickly after stopping compressor; low side is higher than normal while running</td>
+              <td>Faulty compressor discharge valve or seal</td>
+              <td>Replace compressor</td>
+            </tr>
+            <tr>
+              <td rowspan="5">Low-side too low</td>
+              <td>Excessive bubbles in sight glass; condenser not hot</td>
+              <td>Undercharge</td>
+              <td>Repair leaks; discharge, evacuate, recharge to spec</td>
+            </tr>
+            <tr>
+              <td>Expansion valve not frosted; low-pressure line not cold; low-side gauge shows vacuum</td>
+              <td>Frozen or faulty expansion valve (moisture in system)</td>
+              <td>Discharge, evacuate, recharge; replace expansion valve if needed</td>
+            </tr>
+            <tr>
+              <td>Low delivery temperature; airflow from vents restricted</td>
+              <td>Frozen evaporator</td>
+              <td>Run fan with compressor off; check evaporator temperature sensor</td>
+            </tr>
+            <tr>
+              <td>Expansion valve is frosted</td>
+              <td>Clogged expansion valve</td>
+              <td>Clean or replace expansion valve</td>
+            </tr>
+            <tr>
+              <td>Receiver/dryer outlet is cool; inlet is warm (both should be warm during operation)</td>
+              <td>Clogged receiver/dryer</td>
+              <td>Replace receiver/dryer</td>
+            </tr>
+            <tr>
+              <td rowspan="3">Low-side too high</td>
+              <td>Low-pressure hose and check joint are cooler than the area around the evaporator</td>
+              <td>Expansion valve stuck open too long</td>
+              <td>Repair or replace expansion valve</td>
+            </tr>
+            <tr>
+              <td>Low-side pressure drops when condenser is cooled with water</td>
+              <td>Overcharge</td>
+              <td>Discharge, evacuate, recharge to spec</td>
+            </tr>
+            <tr>
+              <td>Pressures equalise immediately when compressor stops; both gauges fluctuate while running</td>
+              <td>Faulty compressor gasket, high-pressure valve, or foreign particle in valve</td>
+              <td>Replace compressor</td>
+            </tr>
+            <tr>
+              <td rowspan="2">Both sides too high</td>
+              <td>Reduced condenser airflow</td>
+              <td>Clogged fins or bad condenser/radiator fan</td>
+              <td>Clean fins; check fan</td>
+            </tr>
+            <tr>
+              <td>No bubbles in sight glass when condenser is cooled with water</td>
+              <td>Overcharge</td>
+              <td>Discharge, evacuate, recharge to spec</td>
+            </tr>
+            <tr>
+              <td rowspan="2">Both sides too low</td>
+              <td>Low-pressure hose and metal ends are cooler than the evaporator</td>
+              <td>Clogged or kinked low-pressure hose</td>
+              <td>Repair or replace</td>
+            </tr>
+            <tr>
+              <td>Temperature around expansion valve is too low compared to temperature around receiver/dryer</td>
+              <td>Clogged high-pressure line</td>
+              <td>Repair or replace</td>
+            </tr>
+            <tr>
+              <td rowspan="3">Refrigerant leaks</td>
+              <td>Compressor clutch is dirty or oily</td>
+              <td>Compressor shaft seal leaking</td>
+              <td>Replace compressor</td>
+            </tr>
+            <tr>
+              <td>Compressor bolts are dirty or oily</td>
+              <td>Leaking around bolt(s)</td>
+              <td>Tighten bolts or replace compressor</td>
+            </tr>
+            <tr>
+              <td>Compressor gasket is wet with oil</td>
+              <td>Gasket leaking</td>
+              <td>Replace compressor</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <footer class="muted">
@@ -218,10 +460,7 @@
         return;
       }
 
-      document.getElementById("rangeWarning").textContent =
-        (tempF < 68 || tempF > 104) ? "Outside chart range; result is extrapolated." : "";
-
-      const low = interpolateByTempAndHumidity(tempF, 14, 24, 31, 52, humidity);
+const low = interpolateByTempAndHumidity(tempF, 14, 24, 31, 52, humidity);
       const high = interpolateByTempAndHumidity(tempF, 161, 210, 280, 340, humidity);
       const vent = interpolateByTempAndHumidity(tempF, 37, 49, 56, 91, humidity);
 
@@ -235,11 +474,22 @@
       document.getElementById("ventFRange").textContent = `${fmt(vent.valueAt30RH)}–${fmt(vent.valueAt80RH)}`;
     }
 
-    ["tempF", "humidity"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", update);
-    });
+    const tempSlider = document.getElementById("tempF");
+    const tempFOut = document.getElementById("tempFOut");
 
-    update();
+    function setTemp(val) {
+      val = Math.min(104, Math.max(68, Math.round(val * 10) / 10));
+      tempSlider.value = val;
+      tempFOut.value = val.toFixed(1) + "°F";
+      update();
+    }
+
+    tempSlider.addEventListener("input", () => setTemp(parseFloat(tempSlider.value)));
+    document.getElementById("tempDown").addEventListener("click", () => setTemp(parseFloat(tempSlider.value) - 0.1));
+    document.getElementById("tempUp").addEventListener("click", () => setTemp(parseFloat(tempSlider.value) + 0.1));
+    document.getElementById("humidity").addEventListener("input", update);
+
+    setTemp(86);
   </script>
 </body>
 </html>
